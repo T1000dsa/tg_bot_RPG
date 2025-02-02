@@ -7,8 +7,6 @@
 # venv/Scripts/activate.bat
 # . venv/bin/activate
 # virtualenv .env
-
-
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher

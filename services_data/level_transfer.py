@@ -1,4 +1,4 @@
-from init import RPG
+from services_data.init import RPG
 class LevelUp:
     def __init__(self):
         self.__LVLs = {1:0,
