@@ -9,6 +9,8 @@ from database_data.Orm_logic import init, insert_data, output_data
 from database_data.models import TgUsersORM
 from keyboards_data.keyboard_choice import keyboard_race, keyboard_perm, keyboard_class
 from services_data.root import level_func, race_cache, class_cache, player
+from services_data.scenario import plots
+from keyboards_data.main_keyboard import init_keyboard
 import logging
 
 
@@ -19,7 +21,6 @@ class FSMFillsome(StatesGroup):
     choice = State()
     is_race = 0
     is_class = 0
-
 
 @router.message(F.text == '/start')
 async def start_message(message:Message):
@@ -41,11 +42,12 @@ async def start_message(message:Message):
                         bio=bio_db,
                         is_bot=isbot_db,
                         language_code=language_db)
-    init()
-    if id_db not in [i[1] for i in output_data()]:
-        insert_data(object)
+    await init()
+    result = await output_data()
+    if id_db not in [i[1] for i in result]:
+        await insert_data(object)
     else:
-        logger.info(msg=f'{id_db} Already in database')
+        logger.info(msg=f'{id_db} {LEXICON['in_data']}')
     await message.answer(LEXICON['start'])
     await message.answer(LEXICON['start_processing'], reply_markup=keyboard_race)
 
@@ -76,20 +78,18 @@ async def race_choice_message(call:CallbackQuery, state: FSMContext):
     player_data['speed'], player_data['luck'], 
     player_data['exp']
     ]
-
-    await call.message.answer(text=f'Характеристики расы {race}:\n'
-                              f'Очки Здоровья: {data[1]}\n'
-                              f'Физический урон: {data[2]}\n'
-                              f'Магический урон: {data[3]}\n'
-                              f'Физическая защита: {data[4]}\n'
-                              f'Магическая защита: {data[5]}\n'
-                              f'Скорость: {data[6]}\n'
-                              f'Удача: {data[7]}\n'
-    )
+    await call.message.answer(text=LEXICON['race_data'].format(
+        key_1=race, 
+        key_2=data[1],
+        key_3=data[2],
+        key_4=data[3],
+        key_5=data[4],
+        key_6=data[5],
+        key_7=data[6],
+        key_8=data[7]))
+    
     FSMFillsome.is_race = 1
     await state.set_state(FSMFillsome.choice)
-
-    
 
 @router.callback_query(F.data[:-2] == 'class')
 async def class_choice_func(call:CallbackQuery, state: FSMContext):
@@ -112,16 +112,18 @@ async def class_choice_func(call:CallbackQuery, state: FSMContext):
     player_data['exp']
     ]
 
-    await call.message.answer(text=f'Характеристики персонажа,\n'
-                              f'учитывая класс {class_prof} и расу {race_cache}:\n'
-                              f'Очки Здоровья: {data[1]}\n'
-                              f'Физический урон: {data[2]}\n'
-                              f'Магический урон: {data[3]}\n'
-                              f'Физическая защита: {data[4]}\n'
-                              f'Магическая защита: {data[5]}\n'
-                              f'Скорость: {data[6]}\n'
-                              f'Удача: {data[7]}\n'
-    )
+    await call.message.answer(text=LEXICON['class_data'].format(
+        key_0=class_prof,
+        key_1=race_cache, 
+        key_2=data[1],
+        key_3=data[2],
+        key_4=data[3],
+        key_5=data[4],
+        key_6=data[5],
+        key_7=data[6],
+        key_8=data[7]
+
+    ))
     print(call.message.text)
     FSMFillsome.is_class = 1
     await state.set_state(FSMFillsome.choice)
@@ -150,19 +152,19 @@ async def class_choiced_yes(message:Message, state: FSMContext):
         if i == 1:
             if i == data[1]:
                 FSMFillsome.is_race = 0
-                await message.answer(text=f'Раса {race_cache} была выбрана!\n',
+                await message.answer(text=f'Раса {race_cache} была выбрана!\n'
+                                     f'{LEXICON["class_processing"]}\n',
                                      reply_markup=keyboard_class)
                 await state.clear()
-
 
             if i == data[0]:
                 FSMFillsome.is_class = 0
                 await message.answer(text=f'Класс {class_cache} был выбран!\n')
                 await state.clear()
                 await message.answer(
-                    text=f'Будучи {class_cache}\n'
-                    f'из раса {race_cache}, вы решаете\n'
-                    'отравиться в путешествие, наполненное различными\n'
-                    'угрозами для жизни.\n\n'
-                    'Вы решаете, что лучше передохнуть перед долгим\n'
-                    'походом на встречу приключениям\n')
+                    text=plots['chapter_1']['plot'].format(
+                        key_0=class_cache,
+                        key_1=race_cache
+                    ), 
+                    reply_markup=init_keyboard('chapter_1'))
+                print(state)

@@ -16,7 +16,7 @@ class LevelUp:
             'physical damage':5, 
             'physical defense':5}
         self.__stat_mage = {
-            'hp':20, 
+            'hp':10, 
             'magical damage':5, 
             'magical defense':5}
         self.__stat_rogue = {
