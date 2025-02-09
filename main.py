@@ -15,8 +15,9 @@ from aiogram.enums import ParseMode
 from config_data.config import Config, load_config
 from handlers_data import other_handlers, user_handlers
 from config_data import commands_menu
-
-from middlewares_data.middlewares import SimpleMiddle
+from aiogram.fsm.strategy import FSMStrategy
+from middlewares_data import paralelism, middlewares
+from aiogram.fsm.storage.memory import MemoryStorage
 
 # Инициализируем логгер
 logger = logging.getLogger(__name__)
@@ -31,6 +32,7 @@ async def main():
 
     # Выводим в консоль информацию о начале запуска бота
     logger.info('Starting bot')
+    storage = MemoryStorage()
 
     # Загружаем конфиг в переменную config
     config: Config = load_config()
@@ -40,7 +42,7 @@ async def main():
         token=config.tg_bot.token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML)
     )
-    dp = Dispatcher()
+    dp = Dispatcher(sfsm_strategy=FSMStrategy.CHAT, storage=storage)
 
     # Настраиваем главное меню бота
     await commands_menu.set_main_menu(bot)
@@ -50,6 +52,7 @@ async def main():
     dp.include_router(other_handlers.router)
 
     #dp.update.outer_middleware(SimpleMiddle())
+    #dp.update.outer_middleware(paralelism.Parel(data_id_user))
 
     # Пропускаем накопившиеся апдейты и запускаем polling
     await bot.delete_webhook(drop_pending_updates=True)

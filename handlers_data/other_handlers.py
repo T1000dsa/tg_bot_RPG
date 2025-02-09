@@ -8,7 +8,7 @@ from aiogram.fsm.state import default_state, State, StatesGroup
 from aiogram.filters import Command, CommandStart, StateFilter
 import logging
 from database_data.Orm_logic import init, insert_data, output_data, drop_data, change_data
-
+from filters_data.filters import IsAdmin
 from services_data.root import player
 
 
@@ -35,17 +35,14 @@ async def callback_messages(call:CallbackQuery):
 
     
 
-@router.message(F.text == '/show')
+@router.message(F.text == '/show', IsAdmin())
 async def show_command_messages(message:Message):
     result = await output_data()
     await message.answer(str(result))
-    print(result)
 
 
 @router.message()
 async def any_messages(message:Message):
-    print(player.GAME_DATA)
-    #print(player.__base_class)
 
     await message.answer('What do you want?')
 

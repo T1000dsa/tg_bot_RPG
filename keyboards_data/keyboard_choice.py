@@ -31,10 +31,13 @@ def create_inline_kb(width: int,
 keyboard_race = create_inline_kb(2, *[f'butt_{i}'for i in range(1, 7)])
 keyboard_class = create_inline_kb(1, *[f'class_{i}'for i in range(1, 4)])
 
-a = KeyboardButton(text=LEXICON['arg_0'])
-b = KeyboardButton(text=LEXICON['arg_1'])
 
-keyboard_perm = ReplyKeyboardMarkup(
-    keyboard=[[a, b]], 
-    resize_keyboard=True,
-    one_time_keyboard=True)
+def construct_kb():
+    a = KeyboardButton(text=LEXICON['arg_0'])
+    b = KeyboardButton(text=LEXICON['arg_1'])
+
+    keyboard_perm = ReplyKeyboardMarkup(
+        keyboard=[[a, b]], 
+        resize_keyboard=True,
+        one_time_keyboard=True)
+    return keyboard_perm

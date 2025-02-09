@@ -20,7 +20,7 @@ sync_engine = create_engine(
 
 async_engine = create_async_engine(
     settings.DATABASE_URL_asyncpg,
-    echo=True
+    echo=False
 )
 
 sync_session = sessionmaker(sync_engine)
