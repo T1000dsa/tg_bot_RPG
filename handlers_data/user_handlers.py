@@ -157,7 +157,6 @@ async def class_choiced_no(message:Message, state: FSMContext):
 async def class_choiced_yes(message:Message, state: FSMContext):
     data:dict = await state.get_data()
     data_cache:dict = await state.get_data()
-
     for key, i in data.items():
         if i == 1:
             if key == 'is_race':
