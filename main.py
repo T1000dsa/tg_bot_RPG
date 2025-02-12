@@ -7,6 +7,8 @@
 # venv/Scripts/activate.bat
 # . venv/bin/activate
 # virtualenv .env
+
+#DOTO separate users data
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher
@@ -16,7 +18,7 @@ from config_data.config import Config, load_config
 from handlers_data import other_handlers, user_handlers
 from config_data import commands_menu
 from aiogram.fsm.strategy import FSMStrategy
-from middlewares_data import paralelism, middlewares
+from middlewares_data.middlewares import SomeMiddleware
 from aiogram.fsm.storage.memory import MemoryStorage
 
 # Инициализируем логгер
@@ -51,8 +53,7 @@ async def main():
     dp.include_router(user_handlers.router)
     dp.include_router(other_handlers.router)
 
-    #dp.update.outer_middleware(SimpleMiddle())
-    #dp.update.outer_middleware(paralelism.Parel(data_id_user))
+    #dp.update.outer_middleware(SomeMiddleware())
 
     # Пропускаем накопившиеся апдейты и запускаем polling
     await bot.delete_webhook(drop_pending_updates=True)

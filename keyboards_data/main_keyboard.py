@@ -1,31 +1,23 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from lexicon_data.lexicon import LEXICON
-from services_data.root import player
-from services_data.init import RPG
-from services_data.scenario import plots
+from services_data.fight_conculation import data_base
 
-def init_keyboard(data:str):
-    data_plot = plots.get(data)
-    player_data = player.data[2]
-    data = [
-    player_data['level'], player_data['hp'], 
-    player_data['physical damage'], player_data['magical damage'], 
-    player_data['physical defense'], player_data['magical defense'],
-    player_data['speed'], player_data['luck'], 
-    player_data['exp']
+
+def init_keyboard(data:str, player_data_k:dict, id:str):
+
+    data_player = [
+    player_data_k['level'], player_data_k['hp'], 
+    player_data_k['physical damage'], player_data_k['magical damage'], 
+    player_data_k['physical defense'], player_data_k['magical defense'],
+    player_data_k['speed'], player_data_k['luck'], 
+    player_data_k['exp']
     ]
-    hp_enemy = data_plot['enemy']['parameters']['HP']
-    dp_enemy = data_plot['enemy']['parameters']['DP']
-    params = {'hp':hp_enemy,
-              'physical defense':dp_enemy}
-
-    enemy = RPG()
-    enemy_stats = {i:sum([params[i], k]) if i in params else k for i, k in enemy.GAME_DATA.items()}
-    button_1 = InlineKeyboardButton(text=f'ОЗ: {data[1]}',callback_data='button1')
-    button_2 = InlineKeyboardButton(text=f'ОБ: {data[4]}',callback_data='button2')
-    button_3 = InlineKeyboardButton(text=f'ОЗ Врага: {enemy_stats['hp']}',callback_data='button3')
-    button_4 = InlineKeyboardButton(text=f'ОБ Врага: {enemy_stats['physical defense']}',callback_data='button4')
+    data_buttons = data_base(data, id)
+    button_1 = InlineKeyboardButton(text=f'ОЗ: {data_player[1]}',callback_data='button1')
+    button_2 = InlineKeyboardButton(text=f'ОБ: {data_player[4]}',callback_data='button2')
+    button_3 = InlineKeyboardButton(text=f'ОЗ Врага: {data_buttons['hp']}',callback_data='button3')
+    button_4 = InlineKeyboardButton(text=f'ОБ Врага: {data_buttons['physical defense']}',callback_data='button4')
 
     act_1 = InlineKeyboardButton(text=f'Атака',callback_data='act1')
     act_2 = InlineKeyboardButton(text=f'Защита',callback_data='act2')

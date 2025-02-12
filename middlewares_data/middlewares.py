@@ -6,8 +6,8 @@ from aiogram.types import TelegramObject
 logger = logging.getLogger(__name__)
 
 
-class SimpleMiddle(BaseMiddleware):
-    result = None
+class SomeMiddleware(BaseMiddleware):
+
     async def __call__(
         self,
         handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
@@ -15,15 +15,13 @@ class SimpleMiddle(BaseMiddleware):
         data: Dict[str, Any]
     ) -> Any:
 
-        logger.info(
-            'Вошли в миддлварь %s, тип события %s',
-            __class__.__name__,
-            event.__class__.__name__
-        )
-        try:
-            result = await handler(event, data)
-            logger.info('Выходим из миддлвари  %s', __class__.__name__)
-            #print(data['event_context'].user.id)
-        except:
-            logger.critical('Выходим из миддлвари  %s', __class__.__name__)
+        logger.debug('Вошли в миддлварь SomeMiddleware')
+
+        data = event.model_dump()
+        print(data['message']['chat']['id'])
+
+        result = await handler(event, data)
+
+        logger.debug('Выходим из миддлвари SomeMiddleware')
+
         return result

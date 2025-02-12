@@ -1,5 +1,9 @@
 class RPG:
-    GAME_DATA = {'level':1, 'hp':100, 'physical damage':10, 'magical damage':0,
+    # unmutable 
+    Base_data = {'level':1, 'hp':100, 'physical damage':15, 'magical damage':0,
+                 'speed':8, 'physical defense':10, 'magical defense':0, 'luck':5,  'exp':0}
+    # mutable
+    GAME_DATA = {'level':1, 'hp':100, 'physical damage':15, 'magical damage':0,
                  'speed':8, 'physical defense':10, 'magical defense':0, 'luck':5,  'exp':0}
     __race = None
     __classs = None
@@ -57,6 +61,15 @@ class RPG:
         return None
     
     def race_choice(self, data:None|str=None):
+        '''
+        Human -> self.GAME_DATA\n
+        Elf -> {i:sum([self.__features_elfs[i], k]) if i in self.__features_elfs else k for i, k in self.__base_class.items()}\n
+        Ork -> {i:sum([self.__features_orks[i], k]) if i in self.__features_orks else k for i, k in self.__base_class.items()}\n
+        Beastmen -> {i:sum([self.__features_beastmens[i], k]) if i in self.__features_beastmens else k for i, k in self.__base_class.items()}\n
+        Demon -> {i:sum([self.__features_demons[i], k]) if i in self.__features_demons else k for i, k in self.__base_class.items()}\n
+        Undead -> {i:sum([self.__features_undeads[i], k]) if i in self.__features_undeads else k for i, k in self.__base_class.items()}\n\n
+        Data will be lowered so you can send it like this: Human HUMAN hUmAn and etc
+        '''
         __result = self.__base_class
     
         if data is not None:
@@ -75,9 +88,10 @@ class RPG:
         
     def class_choice(self, data=None):
         '''
-        warrior -> {'hp':100, 'physical damage':10, 'physical defense':20}
-        mage -> {'hp':-35, 'physical damage':-5, 'magical damage':15, 'magical defense':10}
-        rogue -> {'hp':-20, 'physical damage':4, 'speed':6}
+        warrior -> {'hp':100, 'physical damage':10, 'physical defense':20}\n
+        mage -> {'hp':-35, 'physical damage':-5, 'magical damage':15, 'magical defense':10}\n
+        rogue -> {'hp':-20, 'physical damage':4, 'speed':6}\n\n
+        Data will be lowered so you can send it like this: Warrior WARRIOR WaRrIoR and etc
         '''
         __warrior = {'hp':60, 'physical damage':10, 'physical defense':20}
         __mage = {'hp':-15, 'physical damage':-5, 'magical damage':15, 'magical defense':10}
@@ -99,3 +113,5 @@ class RPG:
 
             return data, 'No data available'
         raise ValueError
+    def restart(self):
+        self.GAME_DATA = self.Base_data
