@@ -5,6 +5,9 @@ class RPG:
     # mutable
     GAME_DATA = {'level':1, 'hp':100, 'physical damage':15, 'magical damage':0,
                  'speed':8, 'physical defense':10, 'magical defense':0, 'luck':5,  'exp':0}
+    
+    heal_data = {'hp':0, 'physical defense':0,'magical defense':0}
+
     __race = None
     __classs = None
     __choiced = False
@@ -59,6 +62,10 @@ class RPG:
     def experience(self, new_data:dict):
         self.GAME_DATA['exp'] = new_data['exp']
         return None
+    
+    @property
+    def set_standart_stats(self):
+        self.heal_data = {i:k for i, k in self.GAME_DATA.items() if i in self.heal_data}
     
     def race_choice(self, data:None|str=None):
         '''
@@ -115,3 +122,7 @@ class RPG:
         raise ValueError
     def restart(self):
         self.GAME_DATA = self.Base_data
+
+    def heal(self):
+        self.GAME_DATA = {i:self.heal_data[i] if i in self.heal_data else k for i, k in self.GAME_DATA.items()}
+        return self.GAME_DATA

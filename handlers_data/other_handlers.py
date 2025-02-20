@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
 from aiogram.filters import Command, CommandStart, StateFilter
 import logging
-from database_data.Orm_logic import init, insert_data, output_data, drop_data, change_data
+from database_data.Orm_logic import init, insert_data, output_data, change_data
 from filters_data.filters import IsAdmin
 
 

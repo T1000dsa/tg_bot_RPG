@@ -1,17 +1,18 @@
 from aiogram import F, Router
-from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
+from aiogram.types import CallbackQuery, Message
 from lexicon_data.lexicon import LEXICON
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
-from aiogram.filters import Command, CommandStart, StateFilter
+from aiogram.filters import StateFilter
 from database_data.Orm_logic import init, insert_data, output_data
-from database_data.models import TgUsersORM
+from database_data.models import TgUsersModel, ScoreModel
 from keyboards_data.keyboard_choice import keyboard_race, construct_kb, keyboard_class
 from services_data.root import level_func, HostileAction, DefenseAction, RPG, players
 from services_data.scenario import plots
 from keyboards_data.main_keyboard import init_keyboard
 from services_data.chapter_viewer import chapter_view
-from services_data.fight_conculation import data_attack, data_restart, data_deffence
+from services_data.fight_conculation import data_attack, data_deffence
+from lexicon_data.data_transfer import data_return, current_language
 import logging
 import random
 
@@ -35,7 +36,6 @@ async def start_message(message:Message):
     id_db = str(data_to_db_chat['id'])
     players[id_db]= RPG()
     players['enemys'].update({id_db:RPG()})
-    data_restart(id_db)
 
     username_db = data_to_db_chat['username']
     firstname_db = data_to_db_chat['first_name']
@@ -43,22 +43,30 @@ async def start_message(message:Message):
     bio_db = data_to_db_chat['bio']
     isbot_db = data_to_db_user['is_bot']
     language_db = data_to_db_user['language_code']
+    current_language['lang'] = language_db
 
-    object = TgUsersORM(user_id=id_db,
+    object = TgUsersModel(user_id=id_db,
                         username=username_db,
                         firstname=firstname_db,
                         lastname=lastname_db,
                         bio=bio_db,
                         is_bot=isbot_db,
                         language_code=language_db)
+    obj_score = ScoreModel(
+        parent_id=id_db,
+        score=0
+    )
+
     await init()
-    result = await output_data()
-    if id_db not in [i[1] for i in result]:
+    result:TgUsersModel = await output_data()
+    if all(map(lambda x:id_db != x.user_id, result)):
         await insert_data(object)
+        await insert_data(obj_score)
     else:
         logger.info(msg=f'{id_db} {LEXICON['in_data']}')
     await message.answer(LEXICON['start'])
     await message.answer(LEXICON['start_processing'], reply_markup=keyboard_race)
+    
 
 
 @router.message(F.text == '/help')
@@ -71,8 +79,9 @@ async def race_choice_message(call:CallbackQuery, state: FSMContext):
     data_to_db_chat = call.message.chat.model_dump()
     id_db = str(data_to_db_chat['id'])
     player:RPG = players[id_db]
-
     race = LEXICON[call.data]
+    repr_race = data_return(race)
+
     await state.set_state(FSMFillsome.choice)
     await state.update_data(race_cache=race)
     await state.update_data(player_data=player)
@@ -82,7 +91,7 @@ async def race_choice_message(call:CallbackQuery, state: FSMContext):
 
     await call.message.edit_reply_markup()
     await call.message.answer(text='Вы хотите играть\n'
-                              f'как {race}?',
+                              f'как {repr_race}?',
                               reply_markup=construct_kb())
     data = [
     player_data['level'], player_data['hp'], 
@@ -92,7 +101,7 @@ async def race_choice_message(call:CallbackQuery, state: FSMContext):
     player_data['exp']
     ]
     await call.message.answer(text=LEXICON['race_data'].format(
-        key_1=race, 
+        key_1=repr_race, 
         key_2=data[1],
         key_3=data[2],
         key_4=data[3],
@@ -110,6 +119,7 @@ async def class_choice_func(call:CallbackQuery, state: FSMContext):
     id_db = str(data_to_db_chat['id'])
     player:RPG = players[id_db]
     class_prof = LEXICON[call.data]
+    repr_class = data_return(class_prof)
 
     await state.update_data(class_cache=class_prof)
     data_cache = await state.get_data()
@@ -119,7 +129,7 @@ async def class_choice_func(call:CallbackQuery, state: FSMContext):
 
     await call.message.edit_reply_markup()
     await call.message.answer(text='Вы хотите играть\n'
-                              f'как {class_prof}?',
+                              f'как {repr_class}?',
                               reply_markup=construct_kb())
     data = [
     player_data['level'], player_data['hp'], 
@@ -129,8 +139,8 @@ async def class_choice_func(call:CallbackQuery, state: FSMContext):
     player_data['exp']
     ]
     await call.message.answer(text=LEXICON['class_data'].format(
-        key_0=class_prof,
-        key_1=data_cache.get('race_cache'), 
+        key_0=repr_class,
+        key_1=data_return(data_cache.get('race_cache')), 
         key_2=data[1],
         key_3=data[2],
         key_4=data[3],
@@ -164,6 +174,7 @@ async def class_choiced_no(message:Message, state: FSMContext):
 async def class_choiced_yes(message:Message, state: FSMContext):
     data_to_db_chat = message.chat.model_dump()
     id_db = str(data_to_db_chat['id'])
+    player:RPG = players[id_db]
 
     data:dict = await state.get_data()
     player_data_ = data.get('player_data').data[2]
@@ -173,17 +184,18 @@ async def class_choiced_yes(message:Message, state: FSMContext):
         if i == 1:
             if key == 'is_race':
                 await state.update_data(is_race=0)
-                await message.answer(text=f'Раса {data_cache.get('race_cache')} была выбрана!\n'
+                await message.answer(text=f'Раса {data_return(data_cache.get('race_cache'))} была выбрана!\n'
                                      f'{LEXICON["class_processing"]}\n',
                                      reply_markup=keyboard_class)
 
             elif key == 'is_class':
+                player.set_standart_stats
                 await state.update_data(is_class=0)
-                await message.answer(text=f'Класс {data_cache.get('class_cache')} был выбран!\n')
+                await message.answer(text=f'Класс {data_return(data_cache.get('class_cache'))} был выбран!\n')
                 await message.answer(
                     text=plots[chapter_result]['plot'].format(
-                        key_0=data_cache.get('class_cache'),
-                        key_1=data_cache.get('race_cache')
+                        key_0=data_return(data_cache.get('class_cache')),
+                        key_1=data_return(data_cache.get('race_cache'))
                     ), 
                     reply_markup=init_keyboard(
                         chapter_result, 
@@ -259,3 +271,14 @@ async def callback_messages_action(call:CallbackQuery, state: FSMContext):
         pass
         
     
+@router.message(F.text=='/stats')
+async def charaters_stats(message:Message, state:FSMContext):
+    await state.set_state(FSMFillsome.choice) 
+    data_to_db_chat = message.chat.model_dump()
+    id_db = str(data_to_db_chat['id'])
+
+    data:dict = await state.get_data()
+    player_data_ = data.get('player_data').data[2]
+    print(players[id_db].GAME_DATA)
+
+    await message.answer(text=f'{player_data_}')

@@ -17,8 +17,8 @@ class SomeMiddleware(BaseMiddleware):
 
         logger.debug('Вошли в миддлварь SomeMiddleware')
 
-        data = event.model_dump()
-        print(data['message']['chat']['id'])
+        data_chat = event.model_dump()
+        print(data_chat['message']['from_user']['language_code'])
 
         result = await handler(event, data)
 

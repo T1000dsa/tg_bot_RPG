@@ -28,7 +28,10 @@ class LevelUp:
             
         
     def LevelUp(self, data:RPG):
-        result, prof = data.data[2], data.data[1]
+        new_data = data.heal()
+        print(new_data)
+        result, prof = new_data, data.data[1]
+        print(data.GAME_DATA, 'before level up')
         for i, k in self.__LVLs.items():
             if result['exp'] >= k and result['level'] < i:
                 result['exp'] = result['exp']-k
@@ -40,7 +43,9 @@ class LevelUp:
                 result = {i:sum([k, self.__stat_mage[i]]) if i in self.__stat_mage else k for i,k in result.items()}
             if prof.lower() == 'rogue':
                     result = {i:sum([k, self.__stat_rogue[i]]) if i in self.__stat_rogue else k for i,k in result.items()}
+        print(result)
         data.data = result
+        print(result, 'after level up')
             
 
 level_forward = LevelUp()

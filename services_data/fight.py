@@ -29,7 +29,6 @@ class  HostileAction:
         elif enemy_luck < 5:
             random_points_enemy = random.randint(-enemy_luck, 0)
 
-        print(random_points, random_points_enemy)
         # Уменьшаем/уничтожаем физическую защиту врага физической атакой
         if enemy_hp > 0 and enemy_def_mag == 0:
             enemy_hp-=player_att_mag + random_points - random_points_enemy
@@ -109,10 +108,10 @@ class DefenseAction:
             random_points_enemy = random.randint(-enemy_luck, 0)
 
         if player_hp > 0 and player_def_mag == 0:
-            player_hp-=enemy_att_mag-random_points+random_points_enemy
+            player_hp-=enemy_att_mag - random_points + random_points_enemy
 
         if player_hp > 0 and player_def_phys == 0:
-            player_hp-=enemy_att_phys-random_points+random_points_enemy
+            player_hp-=enemy_att_phys - random_points + random_points_enemy
 
         if player_hp <= 0:
             player_hp = 0
