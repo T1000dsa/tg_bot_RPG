@@ -7,8 +7,9 @@
 # venv/Scripts/activate.bat
 # . venv/bin/activate
 # virtualenv .env
+# git ls-files | xargs wc -l
 
-#DOTO separate users data
+# DOTO separate users data
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher

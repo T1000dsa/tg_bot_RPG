@@ -11,7 +11,7 @@ from services_data.root import level_func, HostileAction, DefenseAction, RPG, pl
 from services_data.scenario import plots
 from keyboards_data.main_keyboard import init_keyboard
 from services_data.chapter_viewer import chapter_view
-from services_data.fight_conculation import data_attack, data_restart
+from services_data.fight_conculation import data_attack, data_restart, data_deffence
 import logging
 import random
 
@@ -33,7 +33,8 @@ async def start_message(message:Message):
     data_to_db_chat = message.chat.model_dump()
     data_to_db_user = message.from_user.model_dump()
     id_db = str(data_to_db_chat['id'])
-    players[id_db] = RPG()
+    players[id_db]= RPG()
+    players['enemys'].update({id_db:RPG()})
     data_restart(id_db)
 
     username_db = data_to_db_chat['username']
@@ -222,14 +223,39 @@ async def callback_messages_action(call:CallbackQuery, state: FSMContext):
     player_data_ = data.get('player_data').data[2]
     chapter_result = chapter_view()
     data_answer = random.choice(LEXICON[call.data][player.data[1].lower()])
-    if call.data == 'act1':
-        data_attack(chapter_result, player,id_db)
-        await call.message.edit_reply_markup()
-        await call.message.answer(
-            text=f'{data_answer}',
-            reply_markup=init_keyboard(chapter_result, 
-                                       player_data_,
-                                       id_db)
-            )
+    if call.data == 'act1': # Attack
+        result = data_attack(chapter_result, player,id_db)
+        if result is None:
+            await call.message.edit_reply_markup()
+            await call.message.answer(
+                text=f'{data_answer}'
+                )
+            await call.message.answer(text=f'Враг наносит урон по вам',
+                reply_markup=init_keyboard(
+                    chapter_result, 
+                    player_data_,
+                    id_db
+                ))
+        else:
+            await call.message.edit_reply_markup()
+            await call.message.answer(text=f'{result}')
+
+    elif call.data == 'act2': # Defence
+        result = data_deffence(chapter_result, player,id_db)
+        if result is None:
+            await call.message.edit_reply_markup()
+            await call.message.answer(
+                text=f'{data_answer}'
+                )
+            await call.message.answer(text=f'Враг наносит урон по вам',
+                reply_markup=init_keyboard(
+                    chapter_result, 
+                    player_data_,
+                    id_db
+                ))
+    elif call.data == 'act3': # Items
+        pass
+    elif call.data == 'act4': # Retreit
+        pass
         
     

@@ -2,8 +2,7 @@ from services_data.init import RPG
 from services_data.level_transfer import level_func
 from services_data.fight import HostileAction, DefenseAction
 
-players = {}
-enemys:list[RPG] = [RPG() for _ in range(1, 11)]
+players = {'enemys':{}}
 
 '''
 player_1 = RPG()

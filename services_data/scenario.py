@@ -14,9 +14,224 @@ plots = {
                     'Background':'Кому не всё равно?!',
                     'Kind/species':'Гоблин',
                     'parameters':{
-                        'hp':-10, # Минус от базы (100) = 60
-                        'physical defense':0 # Тоже самое (10) = 5
-                            }
+                        'hp':-10, # Минус от базы (100) = 90
+                        'physical defense':5,
+                        'physical damage':10
+                            },
+                    'reward':
+                        {
+                        'exp':100
+                                }
+                    
+                }
+    },
+    'chapter_2':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
+                    
+                }
+    },
+    'chapter_3':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
+                    
+                }
+    },
+    'chapter_3':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
+                    
+                }
+    },
+    'chapter_4':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
+                    
+                }
+    },
+    'chapter_5':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
+                    
+                }
+    },
+    'chapter_6':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
+                    
+                }
+    },
+    'chapter_7':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
+                    
+                }
+    },
+    'chapter_8':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
+                    
+                }
+    },
+    'chapter_9':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
+                    
+                }
+    },
+    'chapter_10':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
                     
                 }
     }
