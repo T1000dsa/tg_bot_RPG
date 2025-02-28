@@ -10,8 +10,8 @@ from keyboards_data.keyboard_choice import keyboard_race, construct_kb, keyboard
 from services_data.root import level_func, HostileAction, DefenseAction, RPG, players
 from services_data.scenario import plots
 from keyboards_data.main_keyboard import init_keyboard
-from services_data.chapter_viewer import chapter_view
-from services_data.fight_conculation import data_attack, data_deffence
+from services_data.chapter_viewer import chapter_view, global_count
+from services_data.fight_conculation import data_attack, data_deffence, data_backpack, data_retreat
 from lexicon_data.data_transfer import data_return, current_language
 import logging
 import random
@@ -234,23 +234,46 @@ async def callback_messages_action(call:CallbackQuery, state: FSMContext):
     data:dict = await state.get_data()
     player_data_ = data.get('player_data').data[2]
     chapter_result = chapter_view()
-    data_answer = random.choice(LEXICON[call.data][player.data[1].lower()])
+    enemy_answer = random.choice(LEXICON['act1']['enemy'])
     if call.data == 'act1': # Attack
+        data_answer = random.choice(LEXICON['act1'][player.data[1].lower()])
         result = data_attack(chapter_result, player,id_db)
         if result is None:
             await call.message.edit_reply_markup()
             await call.message.answer(
                 text=f'{data_answer}'
                 )
-            await call.message.answer(text=f'Враг наносит урон по вам',
+            await call.message.answer(text=enemy_answer,
                 reply_markup=init_keyboard(
                     chapter_result, 
                     player_data_,
                     id_db
                 ))
-        else:
-            await call.message.edit_reply_markup()
-            await call.message.answer(text=f'{result}')
+            
+        if result is not None:
+            if len(result) == 2:
+                await call.message.answer(text=f'Было получено {result[1]['exp']} опыта!\n'
+                                          f'{result[0]}')
+                await call.message.edit_reply_markup()
+                global_count['now']+=1
+                await call.message.answer(text=f'Proceed',
+                reply_markup=init_keyboard(
+                    chapter_result, 
+                    player_data_,
+                    id_db
+                ))
+                
+            else:
+                await call.message.answer(text=result[0])
+                await call.message.edit_reply_markup()
+                global_count['now']+=1
+                await call.message.answer(text=f'Proceed',
+                reply_markup=init_keyboard(
+                    chapter_result, 
+                    player_data_,
+                    id_db
+                ))
+
 
     elif call.data == 'act2': # Defence
         result = data_deffence(chapter_result, player,id_db)
@@ -259,18 +282,30 @@ async def callback_messages_action(call:CallbackQuery, state: FSMContext):
             await call.message.answer(
                 text=f'{data_answer}'
                 )
-            await call.message.answer(text=f'Враг наносит урон по вам',
+            await call.message.answer(text=enemy_answer,
                 reply_markup=init_keyboard(
                     chapter_result, 
                     player_data_,
                     id_db
                 ))
+        if result is not None:
+            await call.message.answer(text=result[0])
+            await call.message.edit_reply_markup()
+            
     elif call.data == 'act3': # Items
-        pass
+        result = data_backpack()
+        await call.message.answer(text=f'Ваши предметы:{result}')
+
     elif call.data == 'act4': # Retreit
-        pass
-        
-    
+        retreat_data = data_retreat(
+                    chapter_result, 
+                    player_data_,
+                    id_db)
+        await call.message.answer(text=retreat_data)
+        await call.message.edit_reply_markup()
+
+
+
 @router.message(F.text=='/stats')
 async def charaters_stats(message:Message, state:FSMContext):
     await state.set_state(FSMFillsome.choice) 

@@ -5,7 +5,7 @@ from services_data.scenario import plots
 from services_data.root import level_func, HostileAction, DefenseAction
 from lexicon_data.lexicon import LEXICON
 
-
+items = {}
 def data_base(data:str, id:str) -> dict:
     data_plot = plots[data]
     params = {**data_plot['enemy']['parameters']}
@@ -44,7 +44,7 @@ def data_attack(data:str, user_data:RPG, id:str):
         data_plot['enemy']['tmp'] = None
         players[id].experience = data_plot['enemy']['reward']
         level_func(players[id])
-        return LEXICON['enemy_down']
+        return LEXICON['enemy_down'], data_plot['enemy']['reward']
     
     if new_players_stats['hp'] <= 0:
         data_plot['enemy']['tmp'] = None
@@ -73,3 +73,16 @@ def data_deffence(data:str, user_data:RPG, id:str):
     if new_players_stats['hp'] <= 0:
         data_plot['enemy']['tmp'] = 0
         return LEXICON['game_over']
+    
+def data_backpack():
+    return items
+
+def data_retreat(data:str, user_data:RPG, id:str):
+    data_plot = plots[data]
+    enemy:RPG = players['enemys'][id].GAME_DATA
+    if user_data['speed']-5 > enemy['speed']:
+        players[id].experience = {'exp':data_plot['enemy']['reward']['exp']//2}
+        level_func(players[id])
+        return LEXICON['retr_succ']
+    else:
+        return LEXICON['retr_unsucc']
