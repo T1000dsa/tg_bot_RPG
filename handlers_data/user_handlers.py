@@ -7,7 +7,7 @@ from aiogram.filters import StateFilter
 from database_data.Orm_logic import init, insert_data, output_data
 from database_data.models import TgUsersModel, ScoreModel
 from keyboards_data.keyboard_choice import keyboard_race, construct_kb, keyboard_class
-from services_data.root import level_func, HostileAction, DefenseAction, RPG, players
+from services_data.root import RPG, players
 from services_data.scenario import plots
 from keyboards_data.main_keyboard import init_keyboard
 from services_data.chapter_viewer import chapter_view, global_count
@@ -255,7 +255,9 @@ async def callback_messages_action(call:CallbackQuery, state: FSMContext):
                 await call.message.answer(text=f'Было получено {result[1]['exp']} опыта!\n'
                                           f'{result[0]}')
                 await call.message.edit_reply_markup()
-                global_count['now']+=1
+                global_count['now'].data_setter()
+                chapter_result = chapter_view()
+                players['enemys'][id_db].restart()
                 await call.message.answer(text=f'Proceed',
                 reply_markup=init_keyboard(
                     chapter_result, 
@@ -266,7 +268,8 @@ async def callback_messages_action(call:CallbackQuery, state: FSMContext):
             else:
                 await call.message.answer(text=result[0])
                 await call.message.edit_reply_markup()
-                global_count['now']+=1
+                global_count['now'].data_setter()
+                players['enemys'][id_db].restart()
                 await call.message.answer(text=f'Proceed',
                 reply_markup=init_keyboard(
                     chapter_result, 
@@ -303,7 +306,6 @@ async def callback_messages_action(call:CallbackQuery, state: FSMContext):
                     id_db)
         await call.message.answer(text=retreat_data)
         await call.message.edit_reply_markup()
-
 
 
 @router.message(F.text=='/stats')

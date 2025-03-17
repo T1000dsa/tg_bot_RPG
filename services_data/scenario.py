@@ -28,20 +28,20 @@ plots = {
     'chapter_2':
     {
         'plot':
-            None,
+            'Какой-то сюжет чисто на проверку',
         'enemy':
                 {
-                    'Name':None,
+                    'Name':'Yes',
                     'Background':None,
                     'Kind/species':None,
                     'parameters':{
-                        'hp':None,
-                        'physical defense':None,
-                        'physical damage':None
+                        'hp':50,
+                        'physical defense':0,
+                        'physical damage':0
                             },
                     'reward':
                         {
-                        'exp':None
+                        'exp':50
                                 }
                     
                 }
@@ -49,41 +49,20 @@ plots = {
     'chapter_3':
     {
         'plot':
-            None,
+            't',
         'enemy':
                 {
-                    'Name':None,
-                    'Background':None,
-                    'Kind/species':None,
+                    'Name':'fdggdf',
+                    'Background':'None',
+                    'Kind/species':'None',
                     'parameters':{
-                        'hp':None,
-                        'physical defense':None,
-                        'physical damage':None
+                        'hp':-20,
+                        'physical defense':20,
+                        'physical damage':10
                             },
                     'reward':
                         {
-                        'exp':None
-                                }
-                    
-                }
-    },
-    'chapter_3':
-    {
-        'plot':
-            None,
-        'enemy':
-                {
-                    'Name':None,
-                    'Background':None,
-                    'Kind/species':None,
-                    'parameters':{
-                        'hp':None,
-                        'physical defense':None,
-                        'physical damage':None
-                            },
-                    'reward':
-                        {
-                        'exp':None
+                        'exp':200
                                 }
                     
                 }
@@ -215,6 +194,27 @@ plots = {
                 }
     },
     'chapter_10':
+    {
+        'plot':
+            None,
+        'enemy':
+                {
+                    'Name':None,
+                    'Background':None,
+                    'Kind/species':None,
+                    'parameters':{
+                        'hp':None,
+                        'physical defense':None,
+                        'physical damage':None
+                            },
+                    'reward':
+                        {
+                        'exp':None
+                                }
+                    
+                }
+    },
+    'chapter_11':
     {
         'plot':
             None,
